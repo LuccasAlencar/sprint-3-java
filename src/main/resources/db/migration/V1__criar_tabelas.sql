@@ -1,29 +1,10 @@
-/*
-  Script SQL para criar a estrutura do banco de dados
-  para o projeto de gerenciamento de motos em Oracle.
-  Inclui comandos DROP para limpar as tabelas e sequências existentes.
+/* V1__criar_tabelas.sql
+   Estrutura inicial do banco - Sprint 3
+   Observação: não faz DROP de objetos. Usa sequences e NEXTVAL nos inserts.
 */
 
 -- -----------------------------------------------------
--- Limpar o ambiente: Drop de tabelas e sequências
--- -----------------------------------------------------
--- A ordem é importante para respeitar as chaves estrangeiras.
-DROP TABLE moto CASCADE CONSTRAINTS;
-DROP TABLE status CASCADE CONSTRAINTS;
-DROP TABLE status_grupo CASCADE CONSTRAINTS;
-DROP TABLE patio CASCADE CONSTRAINTS;
-DROP TABLE zona CASCADE CONSTRAINTS;
-DROP TABLE usuario CASCADE CONSTRAINTS;
-
-DROP SEQUENCE moto_seq;
-DROP SEQUENCE status_seq;
-DROP SEQUENCE status_grupo_seq;
-DROP SEQUENCE patio_seq;
-DROP SEQUENCE zona_seq;
-DROP SEQUENCE usuario_seq;
-
--- -----------------------------------------------------
--- Tabelas
+-- Tabelas (criação na ordem correta)
 -- -----------------------------------------------------
 
 -- Tabela `usuario`
@@ -87,7 +68,6 @@ CREATE TABLE moto (
   CONSTRAINT moto_status_fk FOREIGN KEY (status_id) REFERENCES status(id)
 );
 
-
 -- -----------------------------------------------------
 -- Sequências para ID's auto-incremento
 -- -----------------------------------------------------
@@ -98,63 +78,45 @@ CREATE SEQUENCE status_grupo_seq START WITH 1 INCREMENT BY 1;
 CREATE SEQUENCE status_seq START WITH 1 INCREMENT BY 1;
 CREATE SEQUENCE moto_seq START WITH 1 INCREMENT BY 1;
 
-
 -- -----------------------------------------------------
--- Inserções (Inserts)
+-- Inserções (usando SEQUENCE.NEXTVAL para id)
 -- -----------------------------------------------------
--- Inserir os dados iniciais.
 
--- Inserir usuário fixo
-INSERT INTO usuario (usuario, senha) VALUES ('admin', '$2a$10$s/CIIE7k/KUbi0dNxlAf9.DajXeFGRekeWprpfbTVgtgXuBjEneKq');
+-- Inserir usuário fixo (bcrypt)
+INSERT INTO usuario (id, usuario, senha) VALUES (usuario_seq.NEXTVAL, 'admin', '$2a$10$s/CIIE7k/KUbi0dNxlAf9.DajXeFGRekeWprpfbTVgtgXuBjEneKq');
 
--- Inserir zonas
-INSERT INTO zona (nome, letra) VALUES ('Zona Norte', 'N');
-INSERT INTO zona (nome, letra) VALUES ('Zona Sul', 'S');
-INSERT INTO zona (nome, letra) VALUES ('Zona Leste', 'L');
-INSERT INTO zona (nome, letra) VALUES ('Zona Oeste', 'O');
+-- Inserir zonas (com id)
+INSERT INTO zona (id, nome, letra) VALUES (zona_seq.NEXTVAL, 'Zona Norte', 'N');
+INSERT INTO zona (id, nome, letra) VALUES (zona_seq.NEXTVAL, 'Zona Sul', 'S');
+INSERT INTO zona (id, nome, letra) VALUES (zona_seq.NEXTVAL, 'Zona Leste', 'L');
+INSERT INTO zona (id, nome, letra) VALUES (zona_seq.NEXTVAL, 'Zona Oeste', 'O');
 
 -- Inserir pátios
-INSERT INTO patio (nome) VALUES ('Pátio 1');
-INSERT INTO patio (nome) VALUES ('Pátio 2');
-INSERT INTO patio (nome) VALUES ('Pátio 3');
+INSERT INTO patio (id, nome) VALUES (patio_seq.NEXTVAL, 'Pátio 1');
+INSERT INTO patio (id, nome) VALUES (patio_seq.NEXTVAL, 'Pátio 2');
+INSERT INTO patio (id, nome) VALUES (patio_seq.NEXTVAL, 'Pátio 3');
 
--- Inserir grupos de status
-INSERT INTO status_grupo (nome) VALUES ('Manutenção');
-INSERT INTO status_grupo (nome) VALUES ('Aguardando');
-INSERT INTO status_grupo (nome) VALUES ('Indisponível');
-INSERT INTO status_grupo (nome) VALUES ('Pronta');
+-- Inserir grupos de status (com id)
+INSERT INTO status_grupo (id, nome) VALUES (status_grupo_seq.NEXTVAL, 'Manutenção');
+INSERT INTO status_grupo (id, nome) VALUES (status_grupo_seq.NEXTVAL, 'Aguardando');
+INSERT INTO status_grupo (id, nome) VALUES (status_grupo_seq.NEXTVAL, 'Indisponível');
+INSERT INTO status_grupo (id, nome) VALUES (status_grupo_seq.NEXTVAL, 'Pronta');
 
--- Inserir status específicos
-INSERT INTO status (nome, status_grupo_id) VALUES
-('Específicos', (SELECT id FROM status_grupo WHERE nome = 'Manutenção'));
-INSERT INTO status (nome, status_grupo_id) VALUES
-('Segurança', (SELECT id FROM status_grupo WHERE nome = 'Manutenção'));
-INSERT INTO status (nome, status_grupo_id) VALUES
-('Corretiva', (SELECT id FROM status_grupo WHERE nome = 'Manutenção'));
-INSERT INTO status (nome, status_grupo_id) VALUES
-('Preventiva', (SELECT id FROM status_grupo WHERE nome = 'Manutenção'));
+-- Inserir status específicos (usando SELECT para obter status_grupo.id)
+INSERT INTO status (id, nome, status_grupo_id) VALUES (status_seq.NEXTVAL, 'Específicos', (SELECT id FROM status_grupo WHERE nome = 'Manutenção'));
+INSERT INTO status (id, nome, status_grupo_id) VALUES (status_seq.NEXTVAL, 'Segurança', (SELECT id FROM status_grupo WHERE nome = 'Manutenção'));
+INSERT INTO status (id, nome, status_grupo_id) VALUES (status_seq.NEXTVAL, 'Corretiva', (SELECT id FROM status_grupo WHERE nome = 'Manutenção'));
+INSERT INTO status (id, nome, status_grupo_id) VALUES (status_seq.NEXTVAL, 'Preventiva', (SELECT id FROM status_grupo WHERE nome = 'Manutenção'));
 
-INSERT INTO status (nome, status_grupo_id) VALUES
-('Peças', (SELECT id FROM status_grupo WHERE nome = 'Aguardando'));
-INSERT INTO status (nome, status_grupo_id) VALUES
-('Limpeza', (SELECT id FROM status_grupo WHERE nome = 'Aguardando'));
-INSERT INTO status (nome, status_grupo_id) VALUES
-('Inspeção', (SELECT id FROM status_grupo WHERE nome = 'Aguardando'));
-INSERT INTO status (nome, status_grupo_id) VALUES
-('Aprovação', (SELECT id FROM status_grupo WHERE nome = 'Aguardando'));
+INSERT INTO status (id, nome, status_grupo_id) VALUES (status_seq.NEXTVAL, 'Peças', (SELECT id FROM status_grupo WHERE nome = 'Aguardando'));
+INSERT INTO status (id, nome, status_grupo_id) VALUES (status_seq.NEXTVAL, 'Limpeza', (SELECT id FROM status_grupo WHERE nome = 'Aguardando'));
+INSERT INTO status (id, nome, status_grupo_id) VALUES (status_seq.NEXTVAL, 'Inspeção', (SELECT id FROM status_grupo WHERE nome = 'Aguardando'));
+INSERT INTO status (id, nome, status_grupo_id) VALUES (status_seq.NEXTVAL, 'Aprovação', (SELECT id FROM status_grupo WHERE nome = 'Aguardando'));
 
-INSERT INTO status (nome, status_grupo_id) VALUES
-('Documentação', (SELECT id FROM status_grupo WHERE nome = 'Indisponível'));
-INSERT INTO status (nome, status_grupo_id) VALUES
-('Bloqueada', (SELECT id FROM status_grupo WHERE nome = 'Indisponível'));
-INSERT INTO status (nome, status_grupo_id) VALUES
-('Furtada', (SELECT id FROM status_grupo WHERE nome = 'Indisponível'));
-INSERT INTO status (nome, status_grupo_id) VALUES
-('Irreparável', (SELECT id FROM status_grupo WHERE nome = 'Indisponível'));
+INSERT INTO status (id, nome, status_grupo_id) VALUES (status_seq.NEXTVAL, 'Documentação', (SELECT id FROM status_grupo WHERE nome = 'Indisponível'));
+INSERT INTO status (id, nome, status_grupo_id) VALUES (status_seq.NEXTVAL, 'Bloqueada', (SELECT id FROM status_grupo WHERE nome = 'Indisponível'));
+INSERT INTO status (id, nome, status_grupo_id) VALUES (status_seq.NEXTVAL, 'Furtada', (SELECT id FROM status_grupo WHERE nome = 'Indisponível'));
+INSERT INTO status (id, nome, status_grupo_id) VALUES (status_seq.NEXTVAL, 'Irreparável', (SELECT id FROM status_grupo WHERE nome = 'Indisponível'));
 
-INSERT INTO status (nome, status_grupo_id) VALUES
-('Pronta', (SELECT id FROM status_grupo WHERE nome = 'Pronta'));
-INSERT INTO status (nome, status_grupo_id) VALUES
-('Reservada', (SELECT id FROM status_grupo WHERE nome = 'Pronta'));
-
-
+INSERT INTO status (id, nome, status_grupo_id) VALUES (status_seq.NEXTVAL, 'Pronta', (SELECT id FROM status_grupo WHERE nome = 'Pronta'));
+INSERT INTO status (id, nome, status_grupo_id) VALUES (status_seq.NEXTVAL, 'Reservada', (SELECT id FROM status_grupo WHERE nome = 'Pronta'));
