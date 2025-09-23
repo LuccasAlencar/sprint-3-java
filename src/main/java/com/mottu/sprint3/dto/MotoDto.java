@@ -1,10 +1,10 @@
 package com.mottu.sprint3.dto;
 
 import com.mottu.sprint3.model.Moto;
-import com.mottu.sprint3.model.Patio;
-import com.mottu.sprint3.model.Status;
-import com.mottu.sprint3.model.Zona;
+import jakarta.validation.constraints.AssertTrue;
+import org.springframework.format.annotation.DateTimeFormat;
 
+import java.time.LocalDate;
 import java.sql.Timestamp;
 
 public class MotoDto {
@@ -14,21 +14,47 @@ public class MotoDto {
     private String chassi;
     private String qrCode;
     private Timestamp dataEntrada;
-    private Timestamp previsaoEntrega;
+    
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    private LocalDate previsaoEntrega;
+    
     private String fotos;
     private String observacoes;
     private Long zonaId;
     private Long patioId;
     private Long statusId;
 
-    // Construtor para facilitar a conversão de Model para DTO (útil para o formulário de edição)
+    // Validação customizada: pelo menos um dos três campos deve estar preenchido
+    @AssertTrue(message = "Pelo menos um dos campos (placa, chassi ou QR Code) deve estar preenchido")
+    public boolean isAtLeastOneFieldFilled() {
+        boolean placaOk = placa != null && !placa.trim().isEmpty();
+        boolean chassiOk = chassi != null && !chassi.trim().isEmpty();
+        boolean qrCodeOk = qrCode != null && !qrCode.trim().isEmpty();
+        
+        boolean resultado = placaOk || chassiOk || qrCodeOk;
+        
+        System.out.println("=== VALIDAÇÃO DOS CAMPOS ===");
+        System.out.println("Placa OK: " + placaOk + " ('" + placa + "')");
+        System.out.println("Chassi OK: " + chassiOk + " ('" + chassi + "')");
+        System.out.println("QR Code OK: " + qrCodeOk + " ('" + qrCode + "')");
+        System.out.println("Resultado da validação: " + resultado);
+        
+        return resultado;
+    }
+
+    // Construtor para facilitar a conversão de Model para DTO
     public MotoDto(Moto moto) {
         this.id = moto.getId();
         this.placa = moto.getPlaca();
         this.chassi = moto.getChassi();
         this.qrCode = moto.getQrCode();
         this.dataEntrada = moto.getDataEntrada();
-        this.previsaoEntrega = moto.getPrevisaoEntrega();
+        
+        // Conversão de Timestamp para LocalDate
+        if (moto.getPrevisaoEntrega() != null) {
+            this.previsaoEntrega = moto.getPrevisaoEntrega().toLocalDateTime().toLocalDate();
+        }
+        
         this.fotos = moto.getFotos();
         this.observacoes = moto.getObservacoes();
         if (moto.getZona() != null) {
@@ -43,6 +69,14 @@ public class MotoDto {
     }
 
     public MotoDto() {
+    }
+
+    // Método para converter LocalDate para Timestamp
+    public Timestamp getPrevisaoEntregaAsTimestamp() {
+        if (previsaoEntrega != null) {
+            return Timestamp.valueOf(previsaoEntrega.atStartOfDay());
+        }
+        return null;
     }
 
     // Getters and Setters
@@ -86,11 +120,11 @@ public class MotoDto {
         this.dataEntrada = dataEntrada;
     }
 
-    public Timestamp getPrevisaoEntrega() {
+    public LocalDate getPrevisaoEntrega() {
         return previsaoEntrega;
     }
 
-    public void setPrevisaoEntrega(Timestamp previsaoEntrega) {
+    public void setPrevisaoEntrega(LocalDate previsaoEntrega) {
         this.previsaoEntrega = previsaoEntrega;
     }
 

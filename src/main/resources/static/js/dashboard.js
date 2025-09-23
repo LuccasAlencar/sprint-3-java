@@ -3,6 +3,14 @@ console.log('Dashboard.js carregado com sucesso!');
 document.addEventListener("DOMContentLoaded", function() {
     console.log('DOMContentLoaded executado!');
     
+    // Função auxiliar para definir valor de campo de forma segura
+    const setFieldValue = (fieldId, value) => {
+        const field = document.getElementById(fieldId);
+        if (field) {
+            field.value = value || '';
+        }
+    };
+    
     // Função genérica para lidar com a lógica de modais de adição/edição
     function handleModal(modalId, formId, hiddenId, actionCallback, editCallback) {
         const modal = document.getElementById(modalId);
@@ -19,25 +27,32 @@ document.addEventListener("DOMContentLoaded", function() {
             const modalTitle = modal.querySelector('.modal-title');
             const form = document.getElementById(formId);
 
-            form.reset();
+            if (form) {
+                form.reset();
+            }
 
             if (action === 'add') {
                 modalTitle.textContent = `Adicionar Novo(a) ${modalId.replace('Modal', '')}`;
-                document.getElementById(hiddenId).value = '';
-                actionCallback(false, null);
+                const hiddenField = document.getElementById(hiddenId);
+                if (hiddenField) {
+                    hiddenField.value = '';
+                }
+                if (actionCallback) actionCallback(false, null);
             } else if (action === 'edit') {
                 modalTitle.textContent = `Editar ${modalId.replace('Modal', '')}`;
                 const row = button.closest('tr');
-                editCallback(row);
-                actionCallback(true, row);
+                if (editCallback) editCallback(row);
+                if (actionCallback) actionCallback(true, row);
             }
         });
     }
 
     // Lógica para o modal de Moto
     handleModal('motoModal', 'motoForm', 'motoId', (isEdit, row) => {
-        // Nenhuma ação específica de adição necessária aqui, pois o reset do formulário já é suficiente.
+        console.log('Modal moto - ação:', isEdit ? 'editar' : 'adicionar');
     }, (row) => {
+        console.log('Editando moto, dados da linha:', row);
+        
         // Lógica de edição para Moto
         const motoId = row.getAttribute('data-moto-id');
         const placa = row.getAttribute('data-moto-placa');
@@ -49,53 +64,70 @@ document.addEventListener("DOMContentLoaded", function() {
         const patioId = row.getAttribute('data-moto-patio-id');
         const statusId = row.getAttribute('data-moto-status-id');
 
-        document.getElementById('motoId').value = motoId;
-        document.getElementById('placa').value = placa;
-        document.getElementById('chassi').value = chassi;
-        document.getElementById('qrCode').value = qrCode;
-        document.getElementById('previsaoEntrega').value = previsaoEntrega ? new Date(previsaoEntrega).toISOString().slice(0, 16) : '';
-        document.getElementById('observacoes').value = observacoes;
-        document.getElementById('zonaId').value = zonaId;
-        document.getElementById('patioId').value = patioId;
-        document.getElementById('statusId').value = statusId;
+        // Preenchimento dos campos
+        setFieldValue('motoId', motoId);
+        setFieldValue('placa', placa);
+        setFieldValue('chassi', chassi);
+        setFieldValue('qrCode', qrCode);
+        setFieldValue('observacoes', observacoes);
+        setFieldValue('zonaId', zonaId);
+        setFieldValue('patioId', patioId);
+        setFieldValue('statusId', statusId);
+
+        // Tratamento especial para data (apenas data, sem horário)
+        if (previsaoEntrega && previsaoEntrega !== 'null') {
+            try {
+                const date = new Date(previsaoEntrega);
+                if (!isNaN(date.getTime())) {
+                    const formattedDate = date.toISOString().slice(0, 10); // Apenas YYYY-MM-DD
+                    setFieldValue('previsaoEntrega', formattedDate);
+                }
+            } catch (e) {
+                console.warn('Erro ao formatar data:', e);
+            }
+        }
+        
+        console.log('Dados preenchidos no formulário de moto:', {
+            motoId, placa, chassi, qrCode, previsaoEntrega, zonaId, patioId, statusId
+        });
     });
 
     // Lógica para o modal de Pátio
     handleModal('patioModal', 'patioForm', 'patioId', (isEdit, row) => {
-        // Ações de adição/edição
+        console.log('Modal patio - ação:', isEdit ? 'editar' : 'adicionar');
     }, (row) => {
-        // Lógica de edição para Pátio
-        document.getElementById('patioId').value = row.getAttribute('data-patio-id');
-        document.getElementById('patioNome').value = row.getAttribute('data-patio-nome');
+        console.log('Editando patio, dados da linha:', row);
+        setFieldValue('patioId', row.getAttribute('data-patio-id'));
+        setFieldValue('patioNome', row.getAttribute('data-patio-nome'));
     });
 
     // Lógica para o modal de Zona
     handleModal('zonaModal', 'zonaForm', 'zonaId', (isEdit, row) => {
-        // Ações de adição/edição
+        console.log('Modal zona - ação:', isEdit ? 'editar' : 'adicionar');
     }, (row) => {
-        // Lógica de edição para Zona
-        document.getElementById('zonaId').value = row.getAttribute('data-zona-id');
-        document.getElementById('zonaNome').value = row.getAttribute('data-zona-nome');
-        document.getElementById('zonaLetra').value = row.getAttribute('data-zona-letra');
+        console.log('Editando zona, dados da linha:', row);
+        setFieldValue('zonaId', row.getAttribute('data-zona-id'));
+        setFieldValue('zonaNome', row.getAttribute('data-zona-nome'));
+        setFieldValue('zonaLetra', row.getAttribute('data-zona-letra'));
     });
 
     // Lógica para o modal de Status
     handleModal('statusModal', 'statusForm', 'statusId', (isEdit, row) => {
-        // Ações de adição/edição
+        console.log('Modal status - ação:', isEdit ? 'editar' : 'adicionar');
     }, (row) => {
-        // Lógica de edição para Status
-        document.getElementById('statusId').value = row.getAttribute('data-status-id');
-        document.getElementById('statusNome').value = row.getAttribute('data-status-nome');
-        document.getElementById('statusGrupoId').value = row.getAttribute('data-status-grupo-id');
+        console.log('Editando status, dados da linha:', row);
+        setFieldValue('statusId', row.getAttribute('data-status-id'));
+        setFieldValue('statusNome', row.getAttribute('data-status-nome'));
+        setFieldValue('statusGrupoId', row.getAttribute('data-status-grupo-id'));
     });
 
     // Lógica para o modal de Grupo de Status
     handleModal('statusGrupoModal', 'statusGrupoForm', 'statusGrupoId', (isEdit, row) => {
-        // Ações de adição/edição
+        console.log('Modal status grupo - ação:', isEdit ? 'editar' : 'adicionar');
     }, (row) => {
-        // Lógica de edição para Grupo de Status
-        document.getElementById('statusGrupoId').value = row.getAttribute('data-grupo-id');
-        document.getElementById('statusGrupoNome').value = row.getAttribute('data-grupo-nome');
+        console.log('Editando status grupo, dados da linha:', row);
+        setFieldValue('statusGrupoId', row.getAttribute('data-grupo-id'));
+        setFieldValue('statusGrupoNome', row.getAttribute('data-grupo-nome'));
     });
 
     // Confirmação para os botões de exclusão
@@ -106,6 +138,36 @@ document.addEventListener("DOMContentLoaded", function() {
         button.addEventListener('click', function(event) {
             if (!confirm('Tem certeza que deseja excluir este item?')) {
                 event.preventDefault();
+            }
+        });
+    });
+
+    // Validação customizada e feedback visual para formulários
+    const forms = document.querySelectorAll('form');
+    forms.forEach(form => {
+        form.addEventListener('submit', function(event) {
+            // Validação específica para o formulário de moto
+            if (form.id === 'motoForm') {
+                const placa = document.getElementById('placa').value.trim();
+                const chassi = document.getElementById('chassi').value.trim();
+                const qrCode = document.getElementById('qrCode').value.trim();
+                
+                if (!placa && !chassi && !qrCode) {
+                    event.preventDefault();
+                    alert('Preencha pelo menos um dos campos: Placa, Chassi ou QR Code');
+                    return;
+                }
+                
+                console.log('Enviando formulário de moto com dados:', {
+                    id: document.getElementById('motoId').value,
+                    placa, chassi, qrCode
+                });
+            }
+            
+            const submitBtn = form.querySelector('button[type="submit"]');
+            if (submitBtn) {
+                submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Salvando...';
+                submitBtn.disabled = true;
             }
         });
     });

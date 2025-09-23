@@ -1,6 +1,6 @@
 /* V1__criar_tabelas.sql
    Estrutura inicial do banco - Sprint 3
-   Observação: não faz DROP de objetos. Usa sequences e NEXTVAL nos inserts.
+   Versão corrigida com campos opcionais e IDs fixos
 */
 
 -- -----------------------------------------------------
@@ -47,12 +47,12 @@ CREATE TABLE status (
   CONSTRAINT status_fk FOREIGN KEY (status_grupo_id) REFERENCES status_grupo(id)
 );
 
--- Tabela `moto`
+-- Tabela `moto` - CAMPOS PLACA, CHASSI E QR_CODE AGORA SÃO OPCIONAIS
 CREATE TABLE moto (
   id NUMBER(10,0) NOT NULL,
-  placa VARCHAR2(10) NOT NULL,
-  chassi VARCHAR2(20) NOT NULL,
-  qr_code VARCHAR2(255),
+  placa VARCHAR2(10) NULL,
+  chassi VARCHAR2(20) NULL,
+  qr_code VARCHAR2(255) NULL,
   data_entrada TIMESTAMP(6) NOT NULL,
   previsao_entrega TIMESTAMP(6),
   fotos VARCHAR2(255),
@@ -61,12 +61,14 @@ CREATE TABLE moto (
   status_id NUMBER(10,0) NOT NULL,
   observacoes CLOB,
   CONSTRAINT moto_pk PRIMARY KEY (id),
-  CONSTRAINT moto_placa_uk UNIQUE (placa),
-  CONSTRAINT moto_chassi_uk UNIQUE (chassi),
   CONSTRAINT moto_zona_fk FOREIGN KEY (zona_id) REFERENCES zona(id),
   CONSTRAINT moto_patio_fk FOREIGN KEY (patio_id) REFERENCES patio(id),
   CONSTRAINT moto_status_fk FOREIGN KEY (status_id) REFERENCES status(id)
 );
+
+-- Constraint para garantir que pelo menos um dos campos (placa, chassi, qr_code) esteja preenchido
+ALTER TABLE moto ADD CONSTRAINT moto_at_least_one_field_check 
+  CHECK (placa IS NOT NULL OR chassi IS NOT NULL OR qr_code IS NOT NULL);
 
 -- -----------------------------------------------------
 -- Sequências para ID's auto-incremento
@@ -79,44 +81,73 @@ CREATE SEQUENCE status_seq START WITH 1 INCREMENT BY 1;
 CREATE SEQUENCE moto_seq START WITH 1 INCREMENT BY 1;
 
 -- -----------------------------------------------------
--- Inserções (usando SEQUENCE.NEXTVAL para id)
+-- Inserções usando IDs fixos em ordem
 -- -----------------------------------------------------
 
--- Inserir usuário fixo (bcrypt)
-INSERT INTO usuario (id, usuario, senha) VALUES (usuario_seq.NEXTVAL, 'admin', '$2a$10$s/CIIE7k/KUbi0dNxlAf9.DajXeFGRekeWprpfbTVgtgXuBjEneKq');
+-- Inserir usuário fixo (bcrypt) - senha: senha123
+INSERT INTO usuario (id, usuario, senha) VALUES (1, 'admin', '$2a$10$s/CIIE7k/KUbi0dNxlAf9.DajXeFGRekeWprpfbTVgtgXuBjEneKq');
 
--- Inserir zonas (com id)
-INSERT INTO zona (id, nome, letra) VALUES (zona_seq.NEXTVAL, 'Zona Norte', 'N');
-INSERT INTO zona (id, nome, letra) VALUES (zona_seq.NEXTVAL, 'Zona Sul', 'S');
-INSERT INTO zona (id, nome, letra) VALUES (zona_seq.NEXTVAL, 'Zona Leste', 'L');
-INSERT INTO zona (id, nome, letra) VALUES (zona_seq.NEXTVAL, 'Zona Oeste', 'O');
+-- Inserir zonas
+INSERT INTO zona (id, nome, letra) VALUES (1, 'Zona Norte', 'N');
+INSERT INTO zona (id, nome, letra) VALUES (2, 'Zona Sul', 'S');
+INSERT INTO zona (id, nome, letra) VALUES (3, 'Zona Leste', 'L');
+INSERT INTO zona (id, nome, letra) VALUES (4, 'Zona Oeste', 'O');
 
 -- Inserir pátios
-INSERT INTO patio (id, nome) VALUES (patio_seq.NEXTVAL, 'Pátio 1');
-INSERT INTO patio (id, nome) VALUES (patio_seq.NEXTVAL, 'Pátio 2');
-INSERT INTO patio (id, nome) VALUES (patio_seq.NEXTVAL, 'Pátio 3');
+INSERT INTO patio (id, nome) VALUES (1, 'Pátio 1');
+INSERT INTO patio (id, nome) VALUES (2, 'Pátio 2');
+INSERT INTO patio (id, nome) VALUES (3, 'Pátio 3');
 
--- Inserir grupos de status (com id)
-INSERT INTO status_grupo (id, nome) VALUES (status_grupo_seq.NEXTVAL, 'Manutenção');
-INSERT INTO status_grupo (id, nome) VALUES (status_grupo_seq.NEXTVAL, 'Aguardando');
-INSERT INTO status_grupo (id, nome) VALUES (status_grupo_seq.NEXTVAL, 'Indisponível');
-INSERT INTO status_grupo (id, nome) VALUES (status_grupo_seq.NEXTVAL, 'Pronta');
+-- Inserir grupos de status
+INSERT INTO status_grupo (id, nome) VALUES (1, 'Manutenção');
+INSERT INTO status_grupo (id, nome) VALUES (2, 'Aguardando');
+INSERT INTO status_grupo (id, nome) VALUES (3, 'Indisponível');
+INSERT INTO status_grupo (id, nome) VALUES (4, 'Pronta');
 
--- Inserir status específicos (usando SELECT para obter status_grupo.id)
-INSERT INTO status (id, nome, status_grupo_id) VALUES (status_seq.NEXTVAL, 'Específicos', (SELECT id FROM status_grupo WHERE nome = 'Manutenção'));
-INSERT INTO status (id, nome, status_grupo_id) VALUES (status_seq.NEXTVAL, 'Segurança', (SELECT id FROM status_grupo WHERE nome = 'Manutenção'));
-INSERT INTO status (id, nome, status_grupo_id) VALUES (status_seq.NEXTVAL, 'Corretiva', (SELECT id FROM status_grupo WHERE nome = 'Manutenção'));
-INSERT INTO status (id, nome, status_grupo_id) VALUES (status_seq.NEXTVAL, 'Preventiva', (SELECT id FROM status_grupo WHERE nome = 'Manutenção'));
+-- Inserir status específicos usando IDs fixos
+INSERT INTO status (id, nome, status_grupo_id) VALUES (1, 'Específicos', 1);
+INSERT INTO status (id, nome, status_grupo_id) VALUES (2, 'Segurança', 1);
+INSERT INTO status (id, nome, status_grupo_id) VALUES (3, 'Corretiva', 1);
+INSERT INTO status (id, nome, status_grupo_id) VALUES (4, 'Preventiva', 1);
 
-INSERT INTO status (id, nome, status_grupo_id) VALUES (status_seq.NEXTVAL, 'Peças', (SELECT id FROM status_grupo WHERE nome = 'Aguardando'));
-INSERT INTO status (id, nome, status_grupo_id) VALUES (status_seq.NEXTVAL, 'Limpeza', (SELECT id FROM status_grupo WHERE nome = 'Aguardando'));
-INSERT INTO status (id, nome, status_grupo_id) VALUES (status_seq.NEXTVAL, 'Inspeção', (SELECT id FROM status_grupo WHERE nome = 'Aguardando'));
-INSERT INTO status (id, nome, status_grupo_id) VALUES (status_seq.NEXTVAL, 'Aprovação', (SELECT id FROM status_grupo WHERE nome = 'Aguardando'));
+INSERT INTO status (id, nome, status_grupo_id) VALUES (5, 'Peças', 2);
+INSERT INTO status (id, nome, status_grupo_id) VALUES (6, 'Limpeza', 2);
+INSERT INTO status (id, nome, status_grupo_id) VALUES (7, 'Inspeção', 2);
+INSERT INTO status (id, nome, status_grupo_id) VALUES (8, 'Aprovação', 2);
 
-INSERT INTO status (id, nome, status_grupo_id) VALUES (status_seq.NEXTVAL, 'Documentação', (SELECT id FROM status_grupo WHERE nome = 'Indisponível'));
-INSERT INTO status (id, nome, status_grupo_id) VALUES (status_seq.NEXTVAL, 'Bloqueada', (SELECT id FROM status_grupo WHERE nome = 'Indisponível'));
-INSERT INTO status (id, nome, status_grupo_id) VALUES (status_seq.NEXTVAL, 'Furtada', (SELECT id FROM status_grupo WHERE nome = 'Indisponível'));
-INSERT INTO status (id, nome, status_grupo_id) VALUES (status_seq.NEXTVAL, 'Irreparável', (SELECT id FROM status_grupo WHERE nome = 'Indisponível'));
+INSERT INTO status (id, nome, status_grupo_id) VALUES (9, 'Documentação', 3);
+INSERT INTO status (id, nome, status_grupo_id) VALUES (10, 'Bloqueada', 3);
+INSERT INTO status (id, nome, status_grupo_id) VALUES (11, 'Furtada', 3);
+INSERT INTO status (id, nome, status_grupo_id) VALUES (12, 'Irreparável', 3);
 
-INSERT INTO status (id, nome, status_grupo_id) VALUES (status_seq.NEXTVAL, 'Pronta', (SELECT id FROM status_grupo WHERE nome = 'Pronta'));
-INSERT INTO status (id, nome, status_grupo_id) VALUES (status_seq.NEXTVAL, 'Reservada', (SELECT id FROM status_grupo WHERE nome = 'Pronta'));
+INSERT INTO status (id, nome, status_grupo_id) VALUES (13, 'Pronta', 4);
+INSERT INTO status (id, nome, status_grupo_id) VALUES (14, 'Reservada', 4);
+
+-- Exemplo de motos para testar com campos opcionais
+INSERT INTO moto (id, placa, chassi, qr_code, data_entrada, previsao_entrega, fotos, zona_id, patio_id, status_id, observacoes) 
+VALUES (1, 'ABC-1234', NULL, NULL, SYSTIMESTAMP, NULL, NULL, 1, 1, 13, 'Moto de exemplo apenas com placa');
+
+INSERT INTO moto (id, placa, chassi, qr_code, data_entrada, previsao_entrega, fotos, zona_id, patio_id, status_id, observacoes) 
+VALUES (2, NULL, '1HGCM82633A123456', NULL, SYSTIMESTAMP, NULL, NULL, 2, 2, 5, 'Moto de exemplo apenas com chassi');
+
+INSERT INTO moto (id, placa, chassi, qr_code, data_entrada, previsao_entrega, fotos, zona_id, patio_id, status_id, observacoes) 
+VALUES (3, NULL, NULL, 'QR123456789', SYSTIMESTAMP, NULL, NULL, 3, 3, 1, 'Moto de exemplo apenas com QR Code');
+
+-- Atualizar as sequências para começar após os registros inseridos
+-- No Oracle, precisamos dropar e recriar as sequências
+DROP SEQUENCE usuario_seq;
+DROP SEQUENCE zona_seq;
+DROP SEQUENCE patio_seq;
+DROP SEQUENCE status_grupo_seq;
+DROP SEQUENCE status_seq;
+DROP SEQUENCE moto_seq;
+
+-- Recriar as sequências com os valores corretos
+CREATE SEQUENCE usuario_seq START WITH 2 INCREMENT BY 1;
+CREATE SEQUENCE zona_seq START WITH 5 INCREMENT BY 1;
+CREATE SEQUENCE patio_seq START WITH 4 INCREMENT BY 1;
+CREATE SEQUENCE status_grupo_seq START WITH 5 INCREMENT BY 1;
+CREATE SEQUENCE status_seq START WITH 15 INCREMENT BY 1;
+CREATE SEQUENCE moto_seq START WITH 4 INCREMENT BY 1;
+
+COMMIT;
