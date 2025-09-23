@@ -12,7 +12,7 @@ public class WebConfig implements WebMvcConfigurer {
         // Configuração para JavaScript
         registry.addResourceHandler("/js/**")
                 .addResourceLocations("classpath:/static/js/")
-                .setCachePeriod(0); // Para desenvolvimento - desabilita cache
+                .setCachePeriod(0);
         
         // Configuração para CSS
         registry.addResourceHandler("/css/**")

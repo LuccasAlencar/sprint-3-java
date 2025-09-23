@@ -24,7 +24,7 @@ public class MotoDto {
     private Long patioId;
     private Long statusId;
 
-    // Validação customizada: pelo menos um dos três campos deve estar preenchido
+    // Pelo menos um dos três campos deve estar preenchido
     @AssertTrue(message = "Pelo menos um dos campos (placa, chassi ou QR Code) deve estar preenchido")
     public boolean isAtLeastOneFieldFilled() {
         boolean placaOk = placa != null && !placa.trim().isEmpty();

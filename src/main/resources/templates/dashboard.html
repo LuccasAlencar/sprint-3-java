@@ -20,7 +20,7 @@
                     <table class="table table-dark table-hover">
                         <thead>
                             <tr>
-                                <th scope="col">Placa</th>
+                                <th scope="col">Identificação</th>
                                 <th scope="col">Status</th>
                                 <th scope="col">Ações</th>
                             </tr>
@@ -36,7 +36,10 @@
                                 th:data-moto-zona-id="${moto.zona?.id}"
                                 th:data-moto-patio-id="${moto.patio?.id}"
                                 th:data-moto-status-id="${moto.status?.id}">
-                                <td th:text="${moto.placa}"></td>
+                                <td>
+                                    <div th:text="${moto.identificacao}"></div>
+                                    <small class="text-muted" th:text="'(' + ${moto.tipoIdentificacao} + ')'"></small>
+                                </td>
                                 <td th:text="${moto.status?.nome}"></td>
                                 <td>
                                     <button class="btn btn-warning btn-sm edit-btn" data-bs-toggle="modal" data-bs-target="#motoModal" data-action="edit">Editar</button>
@@ -219,7 +222,7 @@
         </div>
     </div>
 
-    <!-- Modal Pátio -->
+    <!-- Modal Pátio - IDs CORRIGIDOS -->
     <div class="modal fade" id="patioModal" tabindex="-1" aria-labelledby="patioModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content bg-dark text-white">
@@ -229,10 +232,12 @@
                 </div>
                 <div class="modal-body">
                     <form th:action="@{/patio/save}" method="post" id="patioForm">
-                        <input type="hidden" id="patioId" name="id">
+                        <!-- CAMPO HIDDEN COM ID CORRETO -->
+                        <input type="hidden" id="patioIdHidden" name="id">
                         <div class="mb-3">
-                            <label for="patioNome" class="form-label">Nome</label>
-                            <input type="text" class="form-control" id="patioNome" name="nome" required>
+                            <!-- CAMPO DE NOME COM ID CORRETO -->
+                            <label for="patioNomeInput" class="form-label">Nome</label>
+                            <input type="text" class="form-control" id="patioNomeInput" name="nome" required>
                         </div>
                     </form>
                 </div>
@@ -244,7 +249,7 @@
         </div>
     </div>
 
-    <!-- Modal Zona -->
+    <!-- Modal Zona - IDs CORRIGIDOS -->
     <div class="modal fade" id="zonaModal" tabindex="-1" aria-labelledby="zonaModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content bg-dark text-white">
@@ -254,14 +259,17 @@
                 </div>
                 <div class="modal-body">
                     <form th:action="@{/zona/save}" method="post" id="zonaForm">
-                        <input type="hidden" id="zonaId" name="id">
+                        <!-- CAMPO HIDDEN COM ID CORRETO -->
+                        <input type="hidden" id="zonaIdHidden" name="id">
                         <div class="mb-3">
-                            <label for="zonaNome" class="form-label">Nome</label>
-                            <input type="text" class="form-control" id="zonaNome" name="nome" required>
+                            <!-- CAMPO DE NOME COM ID CORRETO -->
+                            <label for="zonaNomeInput" class="form-label">Nome</label>
+                            <input type="text" class="form-control" id="zonaNomeInput" name="nome" required>
                         </div>
                         <div class="mb-3">
-                            <label for="zonaLetra" class="form-label">Letra</label>
-                            <input type="text" class="form-control" id="zonaLetra" name="letra" maxlength="1" required>
+                            <!-- CAMPO DE LETRA COM ID CORRETO -->
+                            <label for="zonaLetraInput" class="form-label">Letra</label>
+                            <input type="text" class="form-control" id="zonaLetraInput" name="letra" maxlength="1" required>
                         </div>
                     </form>
                 </div>
@@ -273,7 +281,7 @@
         </div>
     </div>
 
-    <!-- Modal Status -->
+    <!-- Modal Status - IDs CORRIGIDOS -->
     <div class="modal fade" id="statusModal" tabindex="-1" aria-labelledby="statusModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content bg-dark text-white">
@@ -283,14 +291,17 @@
                 </div>
                 <div class="modal-body">
                     <form th:action="@{/status/save}" method="post" id="statusForm">
-                        <input type="hidden" id="statusId" name="id">
+                        <!-- CAMPO HIDDEN COM ID CORRETO -->
+                        <input type="hidden" id="statusIdHidden" name="id">
                         <div class="mb-3">
-                            <label for="statusNome" class="form-label">Nome</label>
-                            <input type="text" class="form-control" id="statusNome" name="nome" required>
+                            <!-- CAMPO DE NOME COM ID CORRETO -->
+                            <label for="statusNomeInput" class="form-label">Nome</label>
+                            <input type="text" class="form-control" id="statusNomeInput" name="nome" required>
                         </div>
                         <div class="mb-3">
-                            <label for="statusGrupoId" class="form-label">Grupo</label>
-                            <select class="form-select" id="statusGrupoId" name="statusGrupoId" required>
+                            <!-- CAMPO DE GRUPO COM ID CORRETO -->
+                            <label for="statusGrupoSelect" class="form-label">Grupo</label>
+                            <select class="form-select" id="statusGrupoSelect" name="statusGrupoId" required>
                                 <option value="">Selecione o Grupo</option>
                                 <option th:each="grupo : ${grupos}" th:value="${grupo.id}" th:text="${grupo.nome}"></option>
                             </select>
@@ -305,7 +316,7 @@
         </div>
     </div>
 
-    <!-- Modal Status Grupo -->
+    <!-- Modal Status Grupo - IDs CORRIGIDOS -->
     <div class="modal fade" id="statusGrupoModal" tabindex="-1" aria-labelledby="statusGrupoModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content bg-dark text-white">
@@ -315,10 +326,12 @@
                 </div>
                 <div class="modal-body">
                     <form th:action="@{/status-grupo/save}" method="post" id="statusGrupoForm">
-                        <input type="hidden" id="statusGrupoId" name="id">
+                        <!-- CAMPO HIDDEN COM ID CORRETO -->
+                        <input type="hidden" id="statusGrupoIdHidden" name="id">
                         <div class="mb-3">
-                            <label for="statusGrupoNome" class="form-label">Nome</label>
-                            <input type="text" class="form-control" id="statusGrupoNome" name="nome" required>
+                            <!-- CAMPO DE NOME COM ID CORRETO -->
+                            <label for="statusGrupoNomeInput" class="form-label">Nome</label>
+                            <input type="text" class="form-control" id="statusGrupoNomeInput" name="nome" required>
                         </div>
                     </form>
                 </div>

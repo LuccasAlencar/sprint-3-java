@@ -32,6 +32,31 @@ public class Moto {
     @JoinColumn(name = "status_id")
     private Status status;
 
+    // MÉTODO NOVO: Retorna a identificação principal da moto
+    public String getIdentificacao() {
+        // Prioridade: 1º Placa, 2º Chassi, 3º QR Code
+        if (placa != null && !placa.trim().isEmpty()) {
+            return placa;
+        } else if (chassi != null && !chassi.trim().isEmpty()) {
+            return chassi;
+        } else if (qrCode != null && !qrCode.trim().isEmpty()) {
+            return qrCode;
+        }
+        return "Sem identificação";
+    }
+
+    // MÉTODO NOVO: Retorna o tipo da identificação
+    public String getTipoIdentificacao() {
+        if (placa != null && !placa.trim().isEmpty()) {
+            return "Placa";
+        } else if (chassi != null && !chassi.trim().isEmpty()) {
+            return "Chassi";
+        } else if (qrCode != null && !qrCode.trim().isEmpty()) {
+            return "QR Code";
+        }
+        return "N/A";
+    }
+
 	public Long getId() {
 		return id;
 	}
@@ -119,6 +144,4 @@ public class Moto {
 	public void setStatus(Status status) {
 		this.status = status;
 	}
-
-    
 }

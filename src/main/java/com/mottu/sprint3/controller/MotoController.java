@@ -79,12 +79,10 @@ public class MotoController {
             moto.setFotos(motoDto.getFotos() != null && !motoDto.getFotos().trim().isEmpty() ? motoDto.getFotos().trim() : null);
             moto.setObservacoes(motoDto.getObservacoes() != null && !motoDto.getObservacoes().trim().isEmpty() ? motoDto.getObservacoes().trim() : null);
             
-            // Para nova moto, define a data de entrada
             if (moto.getDataEntrada() == null) {
                 moto.setDataEntrada(Timestamp.valueOf(LocalDateTime.now()));
             }
             
-            // Converte LocalDate para Timestamp
             moto.setPrevisaoEntrega(motoDto.getPrevisaoEntregaAsTimestamp());
 
             // Mapeamento dos relacionamentos com base nos IDs

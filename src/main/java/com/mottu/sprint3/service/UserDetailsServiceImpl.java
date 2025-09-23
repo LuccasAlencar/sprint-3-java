@@ -25,8 +25,6 @@ public class UserDetailsServiceImpl implements UserDetailsService {
             throw new UsernameNotFoundException("Usuário não encontrado: " + username);
         }
 
-        // Simulação de perfis. No futuro, você pode ter uma tabela de perfis/roles
-        // para buscar permissões do usuário
         SimpleGrantedAuthority userRole = new SimpleGrantedAuthority("ROLE_USER");
 
         return new User(usuario.getUsuario(), usuario.getSenha(), Collections.singletonList(userRole));

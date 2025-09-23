@@ -51,6 +51,6 @@ public class MainController {
         model.addAttribute("statusList", statusList);
         model.addAttribute("grupos", grupos);
 
-        return "dashboard"; // Retorna o nome do template HTML
+        return "dashboard";
     }
 }
