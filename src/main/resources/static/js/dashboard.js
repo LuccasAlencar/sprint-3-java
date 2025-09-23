@@ -1,7 +1,18 @@
+console.log('Dashboard.js carregado com sucesso!');
+
 document.addEventListener("DOMContentLoaded", function() {
+    console.log('DOMContentLoaded executado!');
+    
     // Função genérica para lidar com a lógica de modais de adição/edição
     function handleModal(modalId, formId, hiddenId, actionCallback, editCallback) {
         const modal = document.getElementById(modalId);
+        if (!modal) {
+            console.error('Modal não encontrado:', modalId);
+            return;
+        }
+        
+        console.log('Configurando modal:', modalId);
+        
         modal.addEventListener('show.bs.modal', function (event) {
             const button = event.relatedTarget;
             const action = button.getAttribute('data-action');
@@ -89,6 +100,8 @@ document.addEventListener("DOMContentLoaded", function() {
 
     // Confirmação para os botões de exclusão
     const deleteButtons = document.querySelectorAll('.delete-btn');
+    console.log('Botões de exclusão encontrados:', deleteButtons.length);
+    
     deleteButtons.forEach(button => {
         button.addEventListener('click', function(event) {
             if (!confirm('Tem certeza que deseja excluir este item?')) {
