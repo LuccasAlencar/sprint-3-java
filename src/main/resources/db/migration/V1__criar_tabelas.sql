@@ -1,7 +1,24 @@
 /* V1__criar_tabelas.sql
    Estrutura inicial do banco - Sprint 3
-   Versão corrigida com campos opcionais e IDs fixos
+   Versão idempotente (pode ser executada múltiplas vezes)
 */
+
+-- Bloco anônimo para limpar objetos existentes de forma segura
+BEGIN
+    -- Remove tabelas se existirem (em ordem reversa por causa das FKs)
+    FOR t IN (SELECT table_name FROM user_tables WHERE table_name IN ('MOTO', 'STATUS', 'STATUS_GRUPO', 'PATIO', 'ZONA', 'USUARIO')) LOOP
+        EXECUTE IMMEDIATE 'DROP TABLE ' || t.table_name || ' CASCADE CONSTRAINTS';
+    END LOOP;
+
+    -- Remove sequences se existirem
+    FOR s IN (SELECT sequence_name FROM user_sequences WHERE sequence_name IN ('USUARIO_SEQ', 'ZONA_SEQ', 'PATIO_SEQ', 'STATUS_GRUPO_SEQ', 'STATUS_SEQ', 'MOTO_SEQ')) LOOP
+        EXECUTE IMMEDIATE 'DROP SEQUENCE ' || s.sequence_name;
+    END LOOP;
+EXCEPTION
+    WHEN OTHERS THEN
+        NULL; -- Ignora erros se objetos não existirem
+END;
+/
 
 -- -----------------------------------------------------
 -- Tabelas (criação na ordem correta)
@@ -47,7 +64,7 @@ CREATE TABLE status (
   CONSTRAINT status_fk FOREIGN KEY (status_grupo_id) REFERENCES status_grupo(id)
 );
 
--- Tabela `moto` - CAMPOS PLACA, CHASSI E QR_CODE AGORA SÃO OPCIONAIS
+-- Tabela `moto` - CAMPOS PLACA, CHASSI E QR_CODE SÃO OPCIONAIS
 CREATE TABLE moto (
   id NUMBER(10,0) NOT NULL,
   placa VARCHAR2(10) NULL,
@@ -85,7 +102,7 @@ CREATE SEQUENCE moto_seq START WITH 1 INCREMENT BY 1;
 -- -----------------------------------------------------
 
 -- Inserir usuário fixo (bcrypt) - senha: senha123
-INSERT INTO usuario (id, usuario, senha) VALUES (1, 'admin', '$2a$10$s/CIIE7k/KUbi0dNxlAf9.DajXeFGRekeWprpfbTVgtgXuBjEneKq');
+INSERT INTO usuario (id, usuario, senha) VALUES (1, 'admin', '$2a$10$CNphorZ/LzTqAHb62IDDrO1S7pTJ086qLWe5DaUJXdHEmAulSdp5K');
 
 -- Inserir zonas
 INSERT INTO zona (id, nome, letra) VALUES (1, 'Zona Norte', 'N');
@@ -134,7 +151,6 @@ INSERT INTO moto (id, placa, chassi, qr_code, data_entrada, previsao_entrega, fo
 VALUES (3, NULL, NULL, 'QR123456789', SYSTIMESTAMP, NULL, NULL, 3, 3, 1, 'Moto de exemplo apenas com QR Code');
 
 -- Atualizar as sequências para começar após os registros inseridos
--- No Oracle, precisamos dropar e recriar as sequências
 DROP SEQUENCE usuario_seq;
 DROP SEQUENCE zona_seq;
 DROP SEQUENCE patio_seq;
@@ -143,11 +159,11 @@ DROP SEQUENCE status_seq;
 DROP SEQUENCE moto_seq;
 
 -- Recriar as sequências com os valores corretos
-CREATE SEQUENCE usuario_seq START WITH 2 INCREMENT BY 1;
-CREATE SEQUENCE zona_seq START WITH 5 INCREMENT BY 1;
-CREATE SEQUENCE patio_seq START WITH 4 INCREMENT BY 1;
-CREATE SEQUENCE status_grupo_seq START WITH 5 INCREMENT BY 1;
-CREATE SEQUENCE status_seq START WITH 15 INCREMENT BY 1;
-CREATE SEQUENCE moto_seq START WITH 4 INCREMENT BY 1;
+CREATE SEQUENCE usuario_seq START WITH 100 INCREMENT BY 1;
+CREATE SEQUENCE zona_seq START WITH 100 INCREMENT BY 1;
+CREATE SEQUENCE patio_seq START WITH 100 INCREMENT BY 1;
+CREATE SEQUENCE status_grupo_seq START WITH 100 INCREMENT BY 1;
+CREATE SEQUENCE status_seq START WITH 100 INCREMENT BY 1;
+CREATE SEQUENCE moto_seq START WITH 100 INCREMENT BY 1;
 
 COMMIT;
