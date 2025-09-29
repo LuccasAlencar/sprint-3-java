@@ -1,7 +1,8 @@
 # Grupo
-Daniel da Silva Barros | RM 556152
-Luccas de Alencar Rufino | RM 558253
-Raul Clauson | RM 555006
+
+- Daniel da Silva Barros | RM 556152
+- Luccas de Alencar Rufino | RM 558253
+- Raul Clauson | RM 555006
 
 
 # Sistema Mottu - Sprint 3
