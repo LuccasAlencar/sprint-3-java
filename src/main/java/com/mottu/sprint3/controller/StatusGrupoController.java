@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.validation.BindingResult;
 
 @Controller
 public class StatusGrupoController {
@@ -19,7 +20,15 @@ public class StatusGrupoController {
     private StatusGrupoRepository statusGrupoRepository;
 
     @PostMapping("/status-grupo/save")
-    public String saveStatusGrupo(@ModelAttribute("statusGrupoDto") @Valid StatusGrupoDto statusGrupoDto, RedirectAttributes ra) {
+    public String saveStatusGrupo(@ModelAttribute("statusGrupoDto") @Valid StatusGrupoDto statusGrupoDto, 
+                                  BindingResult bindingResult,
+                                  RedirectAttributes ra) {
+        
+        if (bindingResult.hasErrors()) {
+            ra.addFlashAttribute("mensagemErro", "Erro de validação: " + bindingResult.getAllErrors().get(0).getDefaultMessage());
+            return "redirect:/";
+        }
+        
         try {
             StatusGrupo statusGrupo = statusGrupoDto.getId() != null ? statusGrupoRepository.findById(statusGrupoDto.getId()).orElse(new StatusGrupo()) : new StatusGrupo();
             statusGrupo.setNome(statusGrupoDto.getNome());

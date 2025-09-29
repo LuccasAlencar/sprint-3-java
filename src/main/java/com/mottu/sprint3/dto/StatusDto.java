@@ -1,10 +1,18 @@
 package com.mottu.sprint3.dto;
 
 import com.mottu.sprint3.model.Status;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 
 public class StatusDto {
     private Long id;
+    
+    @NotBlank(message = "Nome do status é obrigatório")
+    @Size(min = 2, max = 100, message = "Nome deve ter entre 2 e 100 caracteres")
     private String nome;
+    
+    @NotNull(message = "Grupo de status é obrigatório")
     private Long statusGrupoId;
 
     public StatusDto() {}

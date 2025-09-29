@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.validation.BindingResult;
 
 @Controller
 public class ZonaController {
@@ -19,7 +20,15 @@ public class ZonaController {
     private ZonaRepository zonaRepository;
 
     @PostMapping("/zona/save")
-    public String saveZona(@ModelAttribute("zonaDto") @Valid ZonaDto zonaDto, RedirectAttributes ra) {
+    public String saveZona(@ModelAttribute("zonaDto") @Valid ZonaDto zonaDto, 
+                          BindingResult bindingResult,
+                          RedirectAttributes ra) {
+        
+        if (bindingResult.hasErrors()) {
+            ra.addFlashAttribute("mensagemErro", "Erro de validação: " + bindingResult.getAllErrors().get(0).getDefaultMessage());
+            return "redirect:/";
+        }
+        
         try {
             Zona zona = zonaDto.getId() != null ? zonaRepository.findById(zonaDto.getId()).orElse(new Zona()) : new Zona();
             zona.setNome(zonaDto.getNome());

@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.validation.BindingResult;
 
 @Controller
 public class StatusController {
@@ -22,7 +23,15 @@ public class StatusController {
     private StatusGrupoRepository statusGrupoRepository;
 
     @PostMapping("/status/save")
-    public String saveStatus(@ModelAttribute("statusDto") @Valid StatusDto statusDto, RedirectAttributes ra) {
+    public String saveStatus(@ModelAttribute("statusDto") @Valid StatusDto statusDto, 
+                            BindingResult bindingResult,
+                            RedirectAttributes ra) {
+        
+        if (bindingResult.hasErrors()) {
+            ra.addFlashAttribute("mensagemErro", "Erro de validação: " + bindingResult.getAllErrors().get(0).getDefaultMessage());
+            return "redirect:/";
+        }
+        
         try {
             Status status = statusDto.getId() != null ? statusRepository.findById(statusDto.getId()).orElse(new Status()) : new Status();
             status.setNome(statusDto.getNome());

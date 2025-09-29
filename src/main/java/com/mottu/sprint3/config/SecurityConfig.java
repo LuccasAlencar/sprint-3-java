@@ -18,6 +18,14 @@ public class SecurityConfig {
             .authorizeHttpRequests(authorize -> authorize
                 .requestMatchers("/css/**", "/js/**", "/images/**", "/webjars/**", "/favicon.ico").permitAll()
                 .requestMatchers("/login", "/error").permitAll()
+                // Rotas de criação e edição apenas para ADMIN
+                .requestMatchers("/moto/save", "/patio/save", "/zona/save", "/status/save", "/status-grupo/save").hasRole("ADMIN")
+                // Rotas de exclusão apenas para ADMIN
+                .requestMatchers("/moto/delete/**", "/patio/delete/**", "/zona/delete/**", "/status/delete/**", "/status-grupo/delete/**").hasRole("ADMIN")
+                // Rotas de movimentação de motos para ADMIN e OPERADOR
+                .requestMatchers("/moto/move/**", "/moto/change-status/**").hasAnyRole("ADMIN", "OPERADOR")
+                // Dashboard para todos os usuários autenticados
+                .requestMatchers("/", "/dashboard").hasAnyRole("ADMIN", "OPERADOR", "USER")
                 .anyRequest().authenticated()
             )
             .formLogin(form -> form

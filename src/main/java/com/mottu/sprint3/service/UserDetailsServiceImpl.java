@@ -25,7 +25,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
             throw new UsernameNotFoundException("Usuário não encontrado: " + username);
         }
 
-        SimpleGrantedAuthority userRole = new SimpleGrantedAuthority("ROLE_USER");
+        SimpleGrantedAuthority userRole = new SimpleGrantedAuthority("ROLE_" + usuario.getRole());
 
         return new User(usuario.getUsuario(), usuario.getSenha(), Collections.singletonList(userRole));
     }

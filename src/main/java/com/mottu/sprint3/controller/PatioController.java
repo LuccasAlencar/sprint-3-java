@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.validation.BindingResult;
 
 @Controller
 public class PatioController {
@@ -19,7 +20,15 @@ public class PatioController {
     private PatioRepository patioRepository;
 
     @PostMapping("/patio/save")
-    public String savePatio(@ModelAttribute("patioDto") @Valid PatioDto patioDto, RedirectAttributes ra) {
+    public String savePatio(@ModelAttribute("patioDto") @Valid PatioDto patioDto, 
+                          BindingResult bindingResult,
+                          RedirectAttributes ra) {
+        
+        if (bindingResult.hasErrors()) {
+            ra.addFlashAttribute("mensagemErro", "Erro de validação: " + bindingResult.getAllErrors().get(0).getDefaultMessage());
+            return "redirect:/";
+        }
+        
         try {
             Patio patio = patioDto.getId() != null ? patioRepository.findById(patioDto.getId()).orElse(new Patio()) : new Patio();
             patio.setNome(patioDto.getNome());

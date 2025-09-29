@@ -197,6 +197,36 @@ document.addEventListener("DOMContentLoaded", function() {
         });
     }
 
+    // === MODAL DE MOVIMENTAÇÃO DE MOTO ===
+    const moverMotoModal = document.getElementById('moverMotoModal');
+    if (moverMotoModal) {
+        moverMotoModal.addEventListener('show.bs.modal', function (event) {
+            const button = event.relatedTarget;
+            const motoId = button.getAttribute('data-moto-id');
+            const form = document.getElementById('moverMotoForm');
+
+            console.log('Modal mover moto aberto - motoId:', motoId);
+
+            if (form) form.reset();
+            setFieldValue('motoIdMove', motoId);
+        });
+    }
+
+    // === MODAL DE ALTERAÇÃO DE STATUS ===
+    const alterarStatusModal = document.getElementById('alterarStatusModal');
+    if (alterarStatusModal) {
+        alterarStatusModal.addEventListener('show.bs.modal', function (event) {
+            const button = event.relatedTarget;
+            const motoId = button.getAttribute('data-moto-id');
+            const form = document.getElementById('alterarStatusForm');
+
+            console.log('Modal alterar status aberto - motoId:', motoId);
+
+            if (form) form.reset();
+            setFieldValue('motoIdStatus', motoId);
+        });
+    }
+
     // === CONFIRMAÇÃO PARA BOTÕES DE EXCLUSÃO ===
     const deleteButtons = document.querySelectorAll('.delete-btn');
     console.log('Botões de exclusão encontrados:', deleteButtons.length);
