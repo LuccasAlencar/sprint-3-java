@@ -47,13 +47,13 @@
                                 <td>
                                     <div sec:authorize="hasRole('ADMIN')">
                                         <button class="btn btn-warning btn-sm edit-btn" data-bs-toggle="modal" data-bs-target="#motoModal" data-action="edit">Editar</button>
-                                        <button class="btn btn-info btn-sm" data-bs-toggle="modal" data-bs-target="#moverMotoModal" data-moto-id="${moto.id}">Mover</button>
-                                        <button class="btn btn-secondary btn-sm" data-bs-toggle="modal" data-bs-target="#alterarStatusModal" data-moto-id="${moto.id}">Status</button>
+                                        <button class="btn btn-info btn-sm" data-bs-toggle="modal" data-bs-target="#moverMotoModal" th:data-moto-id="${moto.id}">Mover</button>
+                                        <button class="btn btn-secondary btn-sm" data-bs-toggle="modal" data-bs-target="#alterarStatusModal" th:data-moto-id="${moto.id}">Status</button>
                                         <a th:href="@{/moto/delete/{id}(id=${moto.id})}" class="btn btn-danger btn-sm delete-btn">Excluir</a>
                                     </div>
                                     <div sec:authorize="hasRole('OPERADOR')">
-                                        <button class="btn btn-info btn-sm" data-bs-toggle="modal" data-bs-target="#moverMotoModal" data-moto-id="${moto.id}">Mover</button>
-                                        <button class="btn btn-secondary btn-sm" data-bs-toggle="modal" data-bs-target="#alterarStatusModal" data-moto-id="${moto.id}">Status</button>
+                                        <button class="btn btn-info btn-sm" data-bs-toggle="modal" data-bs-target="#moverMotoModal" th:data-moto-id="${moto.id}">Mover</button>
+                                        <button class="btn btn-secondary btn-sm" data-bs-toggle="modal" data-bs-target="#alterarStatusModal" th:data-moto-id="${moto.id}">Status</button>
                                         <span class="text-muted">(Operador)</span>
                                     </div>
                                     <div sec:authorize="hasRole('USER')">
@@ -180,7 +180,6 @@
         </div>
     </div>
 
-    <!-- Modal Moto -->
     <div class="modal fade" id="motoModal" tabindex="-1" aria-labelledby="motoModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg">
             <div class="modal-content bg-dark text-white">
@@ -253,7 +252,6 @@
         </div>
     </div>
 
-    <!-- Modal Pátio - IDs CORRIGIDOS -->
     <div class="modal fade" id="patioModal" tabindex="-1" aria-labelledby="patioModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content bg-dark text-white">
@@ -263,10 +261,8 @@
                 </div>
                 <div class="modal-body">
                     <form th:action="@{/patio/save}" method="post" id="patioForm">
-                        <!-- CAMPO HIDDEN COM ID CORRETO -->
                         <input type="hidden" id="patioIdHidden" name="id">
                         <div class="mb-3">
-                            <!-- CAMPO DE NOME COM ID CORRETO -->
                             <label for="patioNomeInput" class="form-label">Nome</label>
                             <input type="text" class="form-control" id="patioNomeInput" name="nome" required>
                         </div>
@@ -280,7 +276,6 @@
         </div>
     </div>
 
-    <!-- Modal Zona - IDs CORRIGIDOS -->
     <div class="modal fade" id="zonaModal" tabindex="-1" aria-labelledby="zonaModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content bg-dark text-white">
@@ -290,15 +285,12 @@
                 </div>
                 <div class="modal-body">
                     <form th:action="@{/zona/save}" method="post" id="zonaForm">
-                        <!-- CAMPO HIDDEN COM ID CORRETO -->
                         <input type="hidden" id="zonaIdHidden" name="id">
                         <div class="mb-3">
-                            <!-- CAMPO DE NOME COM ID CORRETO -->
                             <label for="zonaNomeInput" class="form-label">Nome</label>
                             <input type="text" class="form-control" id="zonaNomeInput" name="nome" required>
                         </div>
                         <div class="mb-3">
-                            <!-- CAMPO DE LETRA COM ID CORRETO -->
                             <label for="zonaLetraInput" class="form-label">Letra</label>
                             <input type="text" class="form-control" id="zonaLetraInput" name="letra" maxlength="1" required>
                         </div>
@@ -312,7 +304,6 @@
         </div>
     </div>
 
-    <!-- Modal Status - IDs CORRIGIDOS -->
     <div class="modal fade" id="statusModal" tabindex="-1" aria-labelledby="statusModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content bg-dark text-white">
@@ -322,15 +313,12 @@
                 </div>
                 <div class="modal-body">
                     <form th:action="@{/status/save}" method="post" id="statusForm">
-                        <!-- CAMPO HIDDEN COM ID CORRETO -->
                         <input type="hidden" id="statusIdHidden" name="id">
                         <div class="mb-3">
-                            <!-- CAMPO DE NOME COM ID CORRETO -->
                             <label for="statusNomeInput" class="form-label">Nome</label>
                             <input type="text" class="form-control" id="statusNomeInput" name="nome" required>
                         </div>
                         <div class="mb-3">
-                            <!-- CAMPO DE GRUPO COM ID CORRETO -->
                             <label for="statusGrupoSelect" class="form-label">Grupo</label>
                             <select class="form-select" id="statusGrupoSelect" name="statusGrupoId" required>
                                 <option value="">Selecione o Grupo</option>
@@ -347,7 +335,6 @@
         </div>
     </div>
 
-    <!-- Modal Status Grupo - IDs CORRIGIDOS -->
     <div class="modal fade" id="statusGrupoModal" tabindex="-1" aria-labelledby="statusGrupoModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content bg-dark text-white">
@@ -357,10 +344,8 @@
                 </div>
                 <div class="modal-body">
                     <form th:action="@{/status-grupo/save}" method="post" id="statusGrupoForm">
-                        <!-- CAMPO HIDDEN COM ID CORRETO -->
                         <input type="hidden" id="statusGrupoIdHidden" name="id">
                         <div class="mb-3">
-                            <!-- CAMPO DE NOME COM ID CORRETO -->
                             <label for="statusGrupoNomeInput" class="form-label">Nome</label>
                             <input type="text" class="form-control" id="statusGrupoNomeInput" name="nome" required>
                         </div>
@@ -374,7 +359,6 @@
         </div>
     </div>
 
-    <!-- Modal Movimentação de Moto -->
     <div class="modal fade" id="moverMotoModal" tabindex="-1" aria-labelledby="moverMotoModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content bg-dark text-white">
@@ -411,7 +395,6 @@
         </div>
     </div>
 
-    <!-- Modal Alteração de Status -->
     <div class="modal fade" id="alterarStatusModal" tabindex="-1" aria-labelledby="alterarStatusModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content bg-dark text-white">
@@ -451,7 +434,6 @@
 
 </div>
 
-<!-- Scripts específicos do dashboard -->
 <div layout:fragment="scripts">
     <script th:src="@{/js/dashboard.js}"></script>
 </div>
