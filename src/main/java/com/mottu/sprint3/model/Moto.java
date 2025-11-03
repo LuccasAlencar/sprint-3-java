@@ -32,6 +32,9 @@ public class Moto {
     @JoinColumn(name = "status_id")
     private Status status;
 
+    private Double valorServico;
+    private String modelo;
+
     // MÉTODO NOVO: Retorna a identificação principal da moto
     public String getIdentificacao() {
         // Prioridade: 1º Placa, 2º Chassi, 3º QR Code
@@ -143,5 +146,21 @@ public class Moto {
 
 	public void setStatus(Status status) {
 		this.status = status;
+	}
+
+	public Double getValorServico() {
+		return valorServico;
+	}
+
+	public void setValorServico(Double valorServico) {
+		this.valorServico = valorServico;
+	}
+
+	public String getModelo() {
+		return modelo;
+	}
+
+	public void setModelo(String modelo) {
+		this.modelo = modelo;
 	}
 }

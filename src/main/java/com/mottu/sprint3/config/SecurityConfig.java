@@ -18,6 +18,8 @@ public class SecurityConfig {
             .authorizeHttpRequests(authorize -> authorize
                 .requestMatchers("/css/**", "/js/**", "/images/**", "/webjars/**", "/favicon.ico").permitAll()
                 .requestMatchers("/login", "/error").permitAll()
+                // API REST endpoints para o mobile - sem autenticação
+                .requestMatchers("/api/**").permitAll()
                 // Rotas de criação e edição apenas para ADMIN
                 .requestMatchers("/moto/save", "/patio/save", "/zona/save", "/status/save", "/status-grupo/save").hasRole("ADMIN")
                 // Rotas de exclusão apenas para ADMIN
