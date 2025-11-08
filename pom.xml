@@ -96,22 +96,22 @@
 				<artifactId>spring-boot-maven-plugin</artifactId>
 			</plugin>
 			<!-- Flyway Maven Plugin -->
-<plugin>
-<groupId>org.flywaydb</groupId>
-<artifactId>flyway-maven-plugin</artifactId>
-<version>${flyway.version}</version>
-<configuration>
-<url>jdbc:oracle:thin:@oracle.fiap.com.br:1521:orcl</url>
-<user></user>
-<password></password>
-<locations>
-<location>classpath:db/migration</location>
-</locations>
-<cleanDisabled>false</cleanDisabled>
-<baselineOnMigrate>true</baselineOnMigrate>
-<outOfOrder>true</outOfOrder>
-</configuration>
-</plugin>
+			<plugin>
+				<groupId>org.flywaydb</groupId>
+				<artifactId>flyway-maven-plugin</artifactId>
+				<version>${flyway.version}</version>
+				<configuration>
+					<url>jdbc:oracle:thin:@oracle.fiap.com.br:1521:orcl</url>
+					<user>rm558253</user>
+					<password>180803</password>
+					<locations>
+						<location>classpath:db/migration</location>
+					</locations>
+					<cleanDisabled>false</cleanDisabled>
+					<baselineOnMigrate>true</baselineOnMigrate>
+					<outOfOrder>true</outOfOrder>
+				</configuration>
+			</plugin>
 
 			
 		</plugins>
